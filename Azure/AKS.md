@@ -565,7 +565,7 @@ Managed Identity + CSI Driver
 
 This is the preferred enterprise approach.
 
-High-Level Flow
+**High-Level Flow**
 Pod in AKS
    ↓
 Managed Identity
@@ -634,7 +634,7 @@ Secrets Store CSI Driver
 
 It mounts Key Vault secrets into pod filesystem.
 
-Real Architecture
+**Real Architecture**
 Pod
  ↓
 CSI Driver
@@ -663,13 +663,11 @@ Option 2. Synced as Kubernetes Secret
 Key Vault secret becomes:
 
 kind: Secret
-
 inside Kubernetes.
 
 Then app uses env vars.
 
 Example Flow
-
 Suppose:
 
 Secret in Key Vault:
@@ -723,12 +721,9 @@ Gets Azure AD Identity
 
 like a service account for cloud resources.
 
-How Identit
-
-
 How Identity Gets Assigned
 
-Two ways.
+2 ways.
 
 1. System Assigned Managed Identity 🔥
 
@@ -827,6 +822,7 @@ Identity exists in Azure AD
 You grant that identity access to Key Vault
    ↓
 Now AKS can read secrets
+
 Step-by-Step Flow
 1. AKS Gets Managed Identity
 
@@ -837,7 +833,6 @@ az aks create --enable-managed-identity
 Azure creates:
 
 Managed Identity
-
 for the cluster.
 
 2. Find Identity Details
@@ -857,7 +852,6 @@ You’ll get something like:
 }
 
 Important one:
-
 principalId
 
 This uniquely identifies AKS identity in Azure AD.
@@ -914,4 +908,19 @@ Key Vault RBAC Check
  ↓
 Secret Access Granted
 
+For modern Azure Kubernetes Service clusters, Managed Identity is typically created automatically or enabled by default depending on how AKS is created.
 
+So effectively:
+
+Create AKS
+   ↓
+AKS gets Managed Identity
+
+Flow:
+AKS gets Managed Identity
+   ↓
+Managed Identity gets permission on Key Vault
+   ↓
+Pods/Workloads use that identity
+   ↓
+Secrets accessed securely
