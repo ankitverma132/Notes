@@ -400,8 +400,10 @@ az storage blob show \
   --auth-mode login
 
 The final blob upload url is constructed as:
-hhtps://{account}.blob.core.windows.net{accountKey}/{containerName}/{folder}/{fileName}.csv
+
+htps://{account}.blob.core.windows.net{accountKey}/{containerName}/{folder}/{fileName}.csv
 In Out project:
+
 account - pccintakestononprod
 container - dynamic-forms
 folderName - "exception-order-medical-history-{$date & $time}
