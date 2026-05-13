@@ -408,3 +408,5 @@ account - pccintakestononprod
 container - dynamic-forms
 folderName - "exception-order-medical-history-{$date & $time}
 fileNme - consist of user name, ob/non-ob, refill type, date & time
+
+![alt text](<Screenshot 2026-05-06 at 6.29.30 PM.png>)
