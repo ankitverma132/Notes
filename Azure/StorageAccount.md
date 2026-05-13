@@ -398,3 +398,11 @@ az storage blob show \
   --container-name health-reports \
   --name "survey-failures/user123/file.json" \
   --auth-mode login
+
+The final blob upload url is constructed as:
+hhtps://{account}.blob.core.windows.net{accountKey}/{containerName}/{folder}/{fileName}.csv
+In Out project:
+account - pccintakestononprod
+container - dynamic-forms
+folderName - "exception-order-medical-history-{$date & $time}
+fileNme - consist of user name, ob/non-ob, refill type, date & time
