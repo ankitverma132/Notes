@@ -23,14 +23,13 @@ Application Gateway works at:
 Layer 7 (HTTP/HTTPS)
 
 So it understands:
-
 URLs
 paths
 domains
 cookies
 headers
-🧠 Real example
 
+🧠 Real example
 Suppose:
 
 api.health.com/auth
@@ -38,9 +37,8 @@ api.health.com/survey
 api.health.com/reports
 
 Application Gateway can route:
-
-Path	Backend
-/auth	auth-service
+Path	   Backend
+/auth	   auth-service
 /survey	survey-service
 /reports	report-service
 
@@ -58,8 +56,8 @@ Example:
 
 /api/auth    → auth-service
 /api/report  → report-service
-2️⃣ SSL termination
 
+2️⃣ SSL termination
 Gateway handles HTTPS.
 
 HTTPS
@@ -71,9 +69,7 @@ HTTP internally
 **Backend apps don’t manage certificates directly.**
 
 3️⃣ Web Application Firewall (WAF)
-
 VERY important feature 🔥
-
 Protects against:
 
 SQL injection
@@ -103,9 +99,9 @@ AKS Services
 Pods
 
 ## 🚀 Compared to Azure Load Balancer
-Azure LB	   Application Gateway
-Layer 4	   Layer 7
-TCP/UDP	   HTTP/HTTPS
+Azure LB	         Application Gateway
+Layer 4	         Layer 7
+TCP/UDP	         HTTP/HTTPS
 simple balancing	intelligent routing
 no URL awareness	path/domain aware
 
@@ -117,9 +113,6 @@ Public IP
 Application Gateway
    ↓
 AKS / App Services
-
-
-🧠 One-line takeaway
 
 Azure Application Gateway is a Layer 7 web traffic load balancer that intelligently routes HTTP/HTTPS traffic to backend applications with features like SSL termination, WAF, and path-based routing.
 
@@ -164,7 +157,6 @@ Kubernetes Service
 Service finds healthy pod.
 
 Example:
-
 survey-service
     ↓
 survey-pod-1
@@ -187,17 +179,16 @@ Kubernetes Service
 Pod
 
 🚀 Think of responsibilities
-Component	      Responsibility
+Component	         Responsibility
 Application Gateway	internet traffic routing
-Ingress	         K8s HTTP routing
-Service	      stable endpoint for pods
-Pod	         actual application
+Ingress	            K8s HTTP routing
+Service	            stable endpoint for pods
+Pod	               actual application
 
 🧠 One-line takeaway
 The UI/browser sends requests to Application Gateway, which routes traffic into AKS where Kubernetes Services forward requests to healthy pods.
 
 ## Load balancing: 
-
 Application Gateway load balances:
 traffic entering the cluster/app
 
@@ -254,24 +245,21 @@ individual pod IPs
 Kubernetes handles pod discovery.
 
 🧠 Why this separation exists
-
 Because pods:
-
 scale dynamically
 restart often
 IPs change constantly
 
 Kubernetes is much better at handling:
-
 internal pod orchestration
 
 🚀 Application Gateway focuses on
 Feature	            Example
 SSL termination	    HTTPS
 WAF	                security
-path routing	    /auth vs /survey
-domain routing	    api vs admin
-external balancing	multi backend
+path routing	       /auth vs /survey
+domain routing	       api vs admin
+external balancing	 multi backend
 
 🚀 Kubernetes Service focuses on
 Feature	            Example
@@ -279,20 +267,14 @@ pod discovery	      dynamic pods
 internal LB	healthy  pod selection
 cluster networking	pod communication
 
-
-🧠 One-line takeaway
-
 Application Gateway balances and routes incoming internet traffic to AKS services/ingress, while Kubernetes Services load balance requests across healthy pods internally.
 
 
 ## 🔥 Application Gateway health checks
 
 Application Gateway checks:
-
 Is backend endpoint reachable and healthy?
-
 Example:
-
 Can I reach survey-service?
 
 Scenario 1 — One pod unhealthy
@@ -312,17 +294,14 @@ Then:
 Application Gateway detects backend unhealthy
 and stops routing there.
 
-
 🔥 Example health endpoint
 
 App Gateway may probe:
-
 /health
 or:
 /actuator/health
 
 🚀 If probe fails
-
 Application Gateway marks backend:
 Unhealthy
 and avoids routing traffic.
@@ -359,23 +338,19 @@ AKS / App Service
 Application Gateway MUST have:
 its own dedicated subnet
 
-Very important Azure rule.
-
 ## 🚀 Step-by-step in Azure Portal
 1️⃣ Create Virtual Network
 Go to:
-
 Azure Portal
  → Virtual Networks
  → Create
 
 Example:
-Setting	Value
-Name	health-vnet
+Setting	      Value
+Name	         health-vnet
 Address space	10.0.0.0/16
 
 ### Vnet & Subnet:
-
 🧠 Start from real-world analogy
 Think of Azure cloud like:
 
@@ -400,7 +375,6 @@ can talk securely internally.
 
 🔥 Without VNet
 Everything would communicate:
-
 over public internet ❌
 
 which is:
@@ -412,7 +386,6 @@ harder to control
 health-vnet
 
 may have IP range:
-
 10.0.0.0/16
 
 This means:
@@ -433,7 +406,6 @@ health-vnet
 Each subnet isolates certain resources.
 
 🧠 Why subnet needed?
-
 Because different services have:
 
 different security rules
@@ -451,10 +423,21 @@ db-subnet	    Databases
 Because:
 Azure Application Gateway
 
-is actually:
+It Works directly at:
+network layer
+
+It is actually:
 a managed networking appliance
 internally running Azure-managed instances.
 
+It needs private IPs and network space
+to:
+receive traffic
+route traffic
+scale instances
+talk to backend servers
+
+Application Gateway needs subnet because:
 It needs:
 
 private IPs
@@ -481,7 +464,6 @@ reserves IPs
 controls routing internally
 
 Azure wants:
-
 clean isolated networking
 
 🔥 Real architecture
@@ -496,7 +478,6 @@ AKS Cluster (aks-subnet)
 Pods
 
 🧠 Why VNet overall is important
-
 VNet provides:
 
 private communication
@@ -507,6 +488,7 @@ routing control
 Without VNet:
 
 cloud networking would be chaos
+
 🚀 Important networking hierarchy
 Azure Region
     ↓
@@ -517,7 +499,6 @@ Subnets
 Resources
 
 🧠 One-line takeaway
-
 A VNet provides a private network space in Azure, while subnets divide that network into isolated sections for different resources like AKS and Application Gateway.
 
 
@@ -534,7 +515,6 @@ aks-subnet	   AKS
 3️⃣ Create Application Gateway
 
 Go to:
-
 Azure Portal
  → Application Gateway
  → Create
@@ -543,16 +523,16 @@ Azure Portal
 Example:
 
 Setting	Value
-Name	health-app-gateway
-Tier	Standard V2
+Name	   health-app-gateway
+Tier	   Standard V2
 Region	East US
+
 🧠 Standard vs WAF
-Tier	Purpose
+Tier	   Purpose
 Standard	normal routing
-WAF	security protection
+WAF	   security protection
 
 For production:
-
 WAF recommended
 
 5️⃣ Frontend IP
@@ -568,8 +548,8 @@ Can be:
 AKS ingress
 App Service
 VM IPs
-7️⃣ Routing rules
 
+7️⃣ Routing rules
 Example:
 
 Path	Backend
@@ -594,12 +574,9 @@ AGIC =
 Application Gateway Ingress Controller
 
 It automatically syncs:
-
 Kubernetes ingress rules
       ↓
 Application Gateway config
-
-Very powerful.
 
 🚀 Azure CLI example
 
@@ -614,6 +591,7 @@ az network application-gateway create \
   --capacity 2 \
   --sku Standard_v2 \
   --public-ip-address health-appgw-ip
+
 🔥 Important real-world architecture
 
 Usually:
@@ -631,7 +609,6 @@ Services
 Pods
 
 🧠 What App Gateway stores internally
-
 frontend listener
 backend pool
 health probes
@@ -639,13 +616,11 @@ routing rules
 SSL certs
 
 🚀 Big picture
-
 Application Gateway acts like:
 smart HTTP traffic manager
 between internet and your apps.
 
 🧠 One-line takeaway
-
 To create an Azure Application Gateway, you first need a VNet and dedicated subnet, then configure frontend IPs, backend pools, and routing rules to direct HTTP/HTTPS traffic to your applications. 
 
 
@@ -721,7 +696,7 @@ To create an Azure Application Gateway, you first need a VNet and dedicated subn
 
    ![alt text](image-22.png)
 
-   🚀 Real enterprise flow
+🚀 Real enterprise flow
 User
  ↓
 Application Gateway (public entry)
@@ -734,16 +709,11 @@ AKS Internal LoadBalancer/Ingress
  ↓
 Pods
 
-
 🧠 Final simplified architecture to remember
 ACR → stores images
-
 App Gateway → entry point
-
 App Service → UI app
-
 AKS → backend services
-
 Application Insights → monitoring
 
 
@@ -818,8 +788,8 @@ Example:
 
 India users → India region
 US users → US region
-🧠 Application Gateway role
 
+🧠 Application Gateway role
 Mainly:
 
 Layer 7 routing
@@ -830,7 +800,6 @@ path-based routing
 inside one region/VNet.
 
 🧠 Front Door role
-
 Mainly:
 
 global routing
@@ -876,7 +845,6 @@ at Azure edge locations globally
 Closer to users worldwide.
 
 🧠 Example
-
 Suppose your app exists in:
 US
 Europe
@@ -894,7 +862,6 @@ Indian users → India region
 Much faster.
 
 🔥 Real enterprise architecture
-
 Very common:
 
 Global Users
@@ -935,15 +902,14 @@ can usually talk internally.
 
 Security Layer	Can block?
 NSG (Network Security Group)	YES
-Firewall	   YES
-App-level rules	YES
-Private endpoints	YES
-Kubernetes policies	YES
+Firewall	                     YES
+App-level rules	            YES
+Private endpoints	            YES
+Kubernetes policies	         YES
 
 🧠 Default Azure behavior
 
 Inside same VNet:
-
 Allow VNet Inbound
 Allow VNet Outbound
 
@@ -1004,7 +970,6 @@ NOT necessarily:
 one subnet per resource
 
 🚀 Example realistic setup
-
 Inside one Azure Virtual Network:
 
 health-vnet
@@ -1033,16 +998,14 @@ VM3
 🔥 Exception: some Azure services REQUIRE dedicated subnet
 
 Examples:
-
 Azure Application Gateway
 Azure Firewall
 Bastion
 
 These often need:
-
 their own subnet only
-🧠 Why not subnet per resource?
 
+🧠 Why not subnet per resource?
 Because that would become:
 network management nightmare
 
@@ -1051,7 +1014,6 @@ Imagine:
 100 subnets 😂
 
 🚀 Real enterprise strategy
-
 Usually subnet created per:
 
 security boundary
@@ -1073,11 +1035,8 @@ traffic routing
 WAF
 SSL
 load balancing
-API Management (APIM)
 
-True API gateway.
 Handles:
-
 API keys
 rate limiting
 API versions
@@ -1107,16 +1066,13 @@ It is a bridge between:
 Azure Kubernetes Service
 Azure Application Gateway
 
-
 You usually write routes INSIDE AKS like this:
 
 /auth → auth-service
 /report → report-service
 
 Then a component called:
-
 AGIC
-
 automatically tells Azure Application Gateway:
 
 "If request comes to /auth, send it to auth-service."
@@ -1130,8 +1086,10 @@ You define routes in AKS
 /auth
 /survey
 /report
+
 AGIC reads them
 Application Gateway learns routing automatically
+
 🚀 Final flow
 User Request
    ↓
@@ -1141,8 +1099,6 @@ AGIC knows:
 "/auth goes here"
    ↓
 auth-service pod
-
-
 
 ### Azure API Management (APIM) is an Azure resource/service.
 
@@ -1154,7 +1110,6 @@ Application Gateway
 Key Vault
 
 you create APIM as a separate Azure resource.
-
 
 🧠 What APIM actually is
 
@@ -1177,7 +1132,6 @@ networking focused	   developer/API focused
 🧠 What APIM can do
 🔥 Authentication
 Validate JWT token
-
 before backend API receives request.
 
 🔥 Rate limiting
@@ -1188,7 +1142,6 @@ before backend API receives request.
 🔥 Hide backend APIs
 
 Clients call:
-
 api.company.com
 
 instead of direct AKS URLs.
@@ -1196,10 +1149,10 @@ instead of direct AKS URLs.
 🔥 Transform requests/responses
 
 Example:
-
 add headers
 remove fields
 rewrite URL
+
 🚀 Typical architecture
 Users
   ↓
@@ -1211,9 +1164,7 @@ API Management (APIM)
   ↓
 AKS APIs
 
-
 Azure API Management (APIM) is a separate Azure resource that acts as an advanced API gateway for authentication, rate limiting, API policies, versioning, and developer-facing API management.
-
 
 🧠 3 Common setups
 ✅ 1️⃣ Only Application Gateway
@@ -1231,10 +1182,9 @@ Used when:
 internal apps
 simpler microservices
 no advanced API management needed
+
 ✅ 2️⃣ Only APIM
-
 Possible too.
-
 Users
   ↓
 APIM
@@ -1247,6 +1197,7 @@ API-focused platform
 external developer APIs
 authentication/rate limiting needed
 no complex regional networking
+
 ✅ 3️⃣ BOTH Together (VERY COMMON enterprise setup)
 Users
   ↓
@@ -1260,9 +1211,7 @@ AKS APIs
 
 This is VERY common in large enterprises.
 
-
 🧠 Why both are used together
-
 Because they solve DIFFERENT problems.
 
 🚀 Application Gateway handles
@@ -1293,7 +1242,6 @@ AKS APIs
 
 
 🚀 What App Gateway does
-
 Application Gateway says:
 
 "Any request coming to /api
@@ -1308,14 +1256,9 @@ API versioning
 API keys
 
 Then forwards request to AKS/backend.
-
-
 In Azure API Management, the:
-
 Web Service URL
-
 means:
-
 actual backend API endpoint
 
 where APIM should forward requests.
@@ -1329,15 +1272,12 @@ Web Service URL
   ↓
 Backend API
 🚀 Example
-
 Suppose backend API is running in AKS.
 
 Actual backend endpoint:
 
 http://auth-service.default.svc.cluster.local
-
 or:
-
 https://internal-api.company.com
 
 This becomes:
@@ -1363,7 +1303,6 @@ APIM forwards internally to:
 http://auth-service/api/login
 
 configured as:
-
 Web Service URL
 
 The Web Service URL in APIM is the actual backend API endpoint where APIM forwards incoming client requests.
@@ -1434,7 +1373,6 @@ Backend microservice
 🧠 Important insight
 
 This URL is probably:
-
 NOT direct pod/service URL
 
 It is likely:
@@ -1471,7 +1409,6 @@ gateway/ingress routes it to correct backend service.
 Maybe:
 copay-service
 
-
 sp-patient-prd-us-c-agw.optum.com is most likely an enterprise Application Gateway endpoint for the production US patient platform, routing requests like /add-copay-card to backend APIs running inside AKS/APIM.
 
 ### 🧠 Step-by-step flow
@@ -1483,17 +1420,13 @@ https://sp-patient-prd-us-c-agw.optum.com/add-copay-card
 2️⃣ DNS resolves to Application Gateway
 
 Meaning request reaches:
-
 Azure Application Gateway
 
 3️⃣ App Gateway checks routing rule
 
 Example rule:
-
 /*  → APIM backend pool
-
 or:
-
 /api/* → APIM
 4️⃣ Backend pool contains APIM URL/IP
 
@@ -1504,17 +1437,14 @@ https://patient-apim.azure-api.net
 So App Gateway simply forwards request there.
 
 5️⃣ APIM receives request
-
 Now APIM does:
-
 auth checks
 JWT validation
 rate limiting
 API policies
+
 6️⃣ APIM forwards to AKS backend
-
 Example:
-
 /add-copay-card
     ↓
 copay-service
@@ -1533,9 +1463,7 @@ AKS Service
 Pod
 
 APIM has its OWN route configuration.
-
 Inside APIM, developers configure:
-
 URL path  → backend service
 
 mapping.
@@ -1552,7 +1480,6 @@ API Path	Backend URL
 /add-copay-card
 
 APIM checks:
-
 "Oh this route belongs to copay-service"
 
 Then forwards request there.
@@ -1597,13 +1524,11 @@ AKS pod
 
 
 Usually this backend service name:
-
 copay-service
 
 comes from Kubernetes Service YAML.
 
 🧠 Important distinction
-
 In AKS you usually have:
 
 Kubernetes Object	Purpose
@@ -1685,9 +1610,7 @@ If pod dies:
 
 new pod created
 IP changes
-
 But:
-
 copay-service
 
 remains stable.
@@ -1716,4 +1639,182 @@ Service routes to pods
   ↓
 Pods from deployment
 
+
+## How application gateway gete request fron front end?
+
+This is where DNS + Public IP + routing all connect together.
+
+🧠 Simplest flow
+Frontend/User
+   ↓
+Domain URL
+   ↓
+Public IP
+   ↓
+Application Gateway
+🚀 Example
+
+Frontend calls:
+
+https://sp-patient-prd-us-c-agw.optum.com/add-copay-card
+🧠 What happens behind scenes
+1️⃣ DNS lookup happens
+
+Domain:
+
+sp-patient-prd-us-c-agw.optum.com
+
+resolves to:
+
+Application Gateway Public IP
+2️⃣ Browser sends request to that IP
+
+Now traffic reaches:
+
+Azure Application Gateway
+
+3️⃣ Application Gateway listener receives request
+
+Listener checks:
+
+domain
+port
+HTTPS certificate
+
+Example:
+
+HTTPS 443 listener
+4️⃣ Routing rules decide backend
+
+Example:
+
+/add-copay-card → APIM
+5️⃣ Request forwarded internally
+App Gateway
+   ↓
+APIM
+   ↓
+AKS Service
+   ↓
+Pod
+🧠 So how frontend "knows" Application Gateway?
+
+Because frontend calls:
+
+domain name
+
+and DNS maps that domain to:
+
+Application Gateway public IP
+🚀 Important Azure pieces
+Public IP Resource
+
+Attached to Application Gateway.
+
+DNS Record
+
+Maps:
+
+company-api.com
+
+to:
+
+Application Gateway public IP
+🧠 Visual architecture
+Frontend React App
+        ↓ API Call
+sp-patient-prd-us-c-agw.optum.com
+        ↓ DNS
+Application Gateway Public IP
+        ↓
+Application Gateway
+        ↓
+APIM
+        ↓
+AKS Backend
+🔥 VERY common enterprise pattern
+
+Frontend NEVER directly calls:
+
+pod IP
+AKS node
+Kubernetes service
+
+Instead frontend calls:
+
+stable enterprise gateway URL
+🧠 Why this is powerful
+
+Because backend infra can completely change:
+
+pods restart
+AKS replaced
+services moved
+
+BUT frontend still uses same URL.
+🧠 One-line takeaway
+
+Frontend reaches Application Gateway through a domain name whose DNS record points to the Application Gateway’s public IP address.
+
+The URL:
+
+https://specialty.optumrx.com
+
+is probably just:
+
+friendly public domain name
+
+Behind the scenes it may STILL go through:
+
+Azure Front Door
+Azure Application Gateway
+Azure API Management
+AKS
+
+🚀 Example real hidden architecture
+specialty.optumrx.com
+        ↓
+Front Door
+        ↓
+Application Gateway
+        ↓
+APIM
+        ↓
+AKS
+
+But frontend only knows:
+
+https://specialty.optumrx.com
+
+🚀 DNS is the magic here
+
+Domain:
+
+specialty.optumrx.com
+
+may internally point to:
+
+Front Door
+Application Gateway public IP
+APIM endpoint
+
+through DNS configuration.
+
+
+Your actual request flow may be
+React UI
+   ↓
+https://specialty.optumrx.com
+   ↓ DNS resolution
+Front Door / App Gateway
+   ↓
+APIM
+   ↓
+AKS Service
+   ↓
+Pod
+
+🧠 One-line takeaway
+
+Even if the URL is just https://specialty.optumrx.com, it can still internally route through Application Gateway and APIM because public domains are usually mapped to hidden infrastructure using DNS and routing rules.
 
