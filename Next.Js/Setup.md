@@ -593,3 +593,71 @@ Internally Next.js does:
 _app.js
    ↓
 dashboard page component
+
+## Conlusion
+### 🚀 Next.js Folder Structure
+
+health-track-ui/
+│
+├── node_modules/        → Installed npm packages
+│
+├── .next/               → Auto-generated build/output folder
+│
+├── public/              → Static files
+│   ├── logo.png
+│   └── images/
+│
+├── src/
+│   │
+│   ├── app/             → Modern App Router (recommended)
+│   │   │
+│   │   ├── layout.tsx   → Global layout (like old _app.js)
+│   │   │
+│   │   ├── page.tsx     → Home page (/)
+│   │   │
+│   │   ├── dashboard/
+│   │   │   └── page.tsx → /dashboard
+│   │   │
+│   │   ├── workouts/
+│   │   │   └── page.tsx → /workouts
+│   │   │
+│   │   └── api/         → Internal API routes (optional)
+│   │       └── users/
+│   │           └── route.ts
+│   │
+│   ├── components/      → Reusable UI components
+│   │   ├── Navbar.tsx
+│   │   └── Sidebar.tsx
+│   │
+│   ├── services/        → API calling logic
+│   │   └── userService.ts
+│   │
+│   ├── styles/          → CSS files (less used with Tailwind)
+│   │
+│   └── hooks/           → Custom React hooks
+│
+├── .gitignore           → Files Git should ignore
+│
+├── .eslintrc.js         → ESLint configuration
+│
+├── next.config.js       → Next.js configuration
+│
+├── package.json         → Dependencies + scripts
+│
+├── package-lock.json
+│   OR
+│   yarn.lock            → Exact dependency versions
+│
+└── tsconfig.json        → TypeScript configuration
+
+
+🧠 Old Pages Router Structure (What You Saw)
+
+pages/
+│
+├── index.js         → /
+│
+├── _app.js          → Global wrapper
+│
+└── api/
+    └── users.js     → /api/users
