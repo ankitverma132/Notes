@@ -168,6 +168,37 @@ export default function Users() {
   )
 }
 
+🧠 What each means
+✅ data
+Actual API response.
+
+Example:
+data = [
+  { id: 1, name: "Ankit" }
+]
+✅ error
+
+If API fails.
+
+Example:
+network issue
+server down
+500 error
+
+Then:
+error
+
+contains error object.
+
+✅ isLoading
+Boolean.
+true
+while fetching.
+
+Then becomes:
+false
+after data comes.
+
 🔥 What SWR gives automatically
 ✅ Caching
 
@@ -208,31 +239,24 @@ Fetches fresh data in background 🔄
 Updates UI automatically ✅
 
 Very fast user experience.
-
 Cached data - previously fetched data stored temporarily 🔥
 
 🚀 Example Without Cache
-
 Suppose dashboard loads:
-
 GET /workouts
 
 Every time:
-
 page opens
 tab switches
 component rerenders
 
 👉 API called again and again.
-
 Slow + unnecessary.
 
 🔥 With Cache
-
 First API call result gets stored.
 
 Example data:
-
 [
   { id: 1, name: "Chest" },
   { id: 2, name: "Legs" }
