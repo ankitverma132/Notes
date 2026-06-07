@@ -3,16 +3,15 @@
 App Router in Next.js is the NEW routing system introduced in Next.js 13+ 🔥
 It is based on:
 app/
-
 folder instead of:
 pages/
 
 🚀 Old vs New
-Pages Router	App Router
-pages/	        app/
-older system	newer modern system
+Pages Router	    App Router
+pages/	            app/
+older system	    newer modern system
 getServerSideProps	async server components
-simpler	        more powerful
+simpler	            more powerful
 
 🚀 Pages Router
 pages/
@@ -28,7 +27,6 @@ app/
 🧠 Important Difference
 In App Router:
 folders define routes
-
 and inside folder:
 page.js
 represents page.
@@ -73,7 +71,6 @@ export default async function Page() {
 ⚡ Notice
 No:
 getServerSideProps()
-
 No:
 useEffect()
 
@@ -84,7 +81,6 @@ directly.
 
 ## 🚀 Client Components
 If component needs:
-
 useState
 useEffect
 browser APIs
@@ -107,17 +103,16 @@ export default function Counter() {
     </button>
   )
 }
-
 **🧠 Without "use client"**
 Hooks won’t work.
 Because component is server component by default.
 
 🚀 Special Files in App Router
-File	    Purpose
-page.js	    route page
-layout.js	shared layout
-loading.js	loading UI
-error.js	error handling
+File	        Purpose
+page.js	        route page
+layout.js	    shared layout
+loading.js	    loading UI
+error.js	    error handling
 not-found.js	404 UI
 
 🔥 Layout Example
@@ -167,7 +162,6 @@ Colocation	        cleaner structure
 Suspense	        better loading states
 
 ⚠️ But App Router is more complex initially
-
 Because:
 server/client boundary
 caching behavior
@@ -309,7 +303,6 @@ Function runs on server
 
 Marks function as:
 server-side function
-
 
 🚀 Why powerful?
 Old way:
@@ -546,4 +539,3 @@ suspense
 nested loading states
 
 Very modern React architecture.
-
