@@ -108,12 +108,12 @@ Hooks won’t work.
 Because component is server component by default.
 
 🚀 Special Files in App Router
-File	        Purpose
+File	          Purpose
 page.js	        route page
-layout.js	    shared layout
+layout.js	      shared layout
 loading.js	    loading UI
-error.js	    error handling
-not-found.js	404 UI
+error.js	      error handling
+not-found.js	  404 UI
 
 🔥 Layout Example
 app/
@@ -123,6 +123,19 @@ app/
 
 layout.js
 wraps pages automatically.
+
+🚀 layout.js
+export default function Layout({
+  children
+}) {
+  return (
+    <div>
+      <nav>Navbar</nav>
+
+      {children}
+    </div>
+  )
+}
 
 Great for:
 navbar
@@ -167,8 +180,6 @@ server/client boundary
 caching behavior
 async rendering
 React Server Components
-
-can feel confusing initially.
 
 ## 🚀 Server Components vs Client Components
 
@@ -240,11 +251,9 @@ import Counter from "./Counter"
 
 export default async function Page() {
   const data = await fetchData()
-
   return (
     <div>
       <h1>Dashboard</h1>
-
       <Counter />
     </div>
   )
@@ -285,7 +294,6 @@ async function saveData(formData) {
 Use in form
 <form action={saveData}>
   <input name="name" />
-
   <button type="submit">
     Save
   </button>
@@ -293,7 +301,6 @@ Use in form
 
 🧠 What happens?
 When button clicked:
-
 Browser
    ↓
 Next.js calls server action
@@ -314,6 +321,7 @@ fetch("/api/save")
 API Route
  ↓
 Server
+
 App Router Server Action
 Form
  ↓
@@ -437,7 +445,6 @@ loading.js	loading UI
 error.js	error UI
 
 🚀 loading.js
-
 Shows automatically while page/data is loading.
 
 Example Structure
@@ -462,7 +469,6 @@ async function getData() {
 
 export default async function Page() {
   const data = await getData()
-
   return (
     <div>
       {data.map((item) => (
@@ -472,7 +478,6 @@ export default async function Page() {
   )
 }
 🧠 What happens?
-
 During:
 await getData()
 
@@ -530,7 +535,6 @@ Then:
 error.js automatically appears
 
 🚀 Why App Router loading is powerful
-
 Supports:
 
 streaming
@@ -539,3 +543,224 @@ suspense
 nested loading states
 
 Very modern React architecture.
+
+## Parallel routes in Next.js
+
+Parallel Routes in Next.js App Router are advanced routing feature.
+They allow:
+multiple pages/UI sections to render independently at SAME time.
+
+🚀 Normal Routing
+Usually one route renders one page:
+
+/dashboard
+renders:
+
+Dashboard Page
+🔥 Parallel Routes
+
+You can render:
+sidebar
+analytics
+team panel
+notifications
+
+as separate route slots simultaneously.
+
+🧠 Think Like This
+Instead of:
+ONE page
+you get:
+MULTIPLE independent page sections
+
+🚀 Syntax
+Uses:
+@folderName
+Example Structure
+app/
+   dashboard/
+      layout.js
+      @analytics/
+         page.js
+      @team/
+         page.js
+🧠 Meaning
+Dashboard layout receives:
+analytics slot
+team slot
+
+separately.
+
+🚀 layout.js
+export default function Layout({
+  analytics,
+  team
+}) {
+  return (
+    <div>
+      <div>{analytics}</div>
+
+      <div>{team}</div>
+    </div>
+  )
+}
+🔥 Result
+Both routes render together:
+
+-------------------
+| Analytics Panel |
+-------------------
+| Team Panel      |
+-------------------
+🧠 Why called “parallel”?
+Because route segments load/render independently.
+
+Not one after another.
+🚀 HUGE Real-world Use Cases
+
+Perfect for:
+
+dashboards
+admin panels
+split-screen UIs
+modals
+side panels
+💡 Example
+
+Health app dashboard:
+
+-------------------------
+| Workout Stats         |
+-------------------------
+| Recent Activity       |
+-------------------------
+| AI Recommendations    |
+-------------------------
+
+Each could be separate parallel route.
+
+🔥 Parallel + Loading
+Each slot can even have:
+
+its own loading.js
+its own error.js
+
+VERY powerful.
+
+## Data Fetching in APP Router:
+Data fetching in App Router of Next.js became MUCH simpler bro 🔥
+
+Old Pages Router had:
+
+getServerSideProps
+getStaticProps
+getInitialProps
+
+App Router mostly uses:
+
+async components + fetch()
+
+directly.
+
+🚀 Basic Example
+async function getUsers() {
+  const res = await fetch(
+    "https://jsonplaceholder.typicode.com/users"
+  )
+
+  return res.json()
+}
+
+export default async function Page() {
+  const users = await getUsers()
+
+  return (
+    <div>
+      {users.map(user => (
+        <p key={user.id}>
+          {user.name}
+        </p>
+      ))}
+    </div>
+  )
+}
+🧠 Why this works?
+
+Because App Router pages are:
+Server Components by default
+
+Server components can:
+await promises
+fetch data directly
+
+🔥 No More Needed
+getServerSideProps()
+or
+useEffect()
+for initial server fetching.
+
+🚀 Fetching Happens On Server
+Flow:
+Request page
+    ↓
+Server fetches data
+    ↓
+HTML generated
+    ↓
+Browser receives ready UI
+
+🚀 Different Fetching Modes
+
+This is VERY important.
+1. Default Fetch (cached)
+fetch(url)
+Usually cached/static optimized.
+
+2. Dynamic Fetch (SSR-like)
+fetch(url, {
+  cache: "no-store"
+})
+Equivalent to:
+getServerSideProps()
+Runs on EVERY request.
+
+3. Revalidation (ISR-like)
+fetch(url, {
+  next: {
+    revalidate: 60
+  }
+})
+Re-fetch every:
+60 seconds
+
+Equivalent to ISR.
+
+🧠 Mapping Old → New
+Pages Router	      App Router
+getServerSideProps	cache: "no-store"
+getStaticProps	    default fetch
+ISR	                revalidate
+
+🔥 Client-side Fetching Still Possible
+If component uses:
+"use client"
+then you can still use:
+
+useEffect
+SWR
+React Query
+
+🧠 Recommended Pattern
+Server Components
+For:
+initial page data
+SEO
+dashboards
+secure fetching
+Client Components
+
+For:
+live updates
+interactions
+polling
+user-triggered fetching
