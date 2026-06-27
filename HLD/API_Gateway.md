@@ -568,3 +568,127 @@ Because AWS API Gateway is already a fully managed, highly available service. AW
 If you're using AWS API Gateway (managed service), then you usually do not need an ALB in front of it.
 
 
+## Real-world Azure architecture.
+
+Suppose your architecture is:
+
+Internet
+      │
+      ▼
+Azure Front Door
+      │
+      ▼
+Azure API Management (APIM)
+      │
+      ▼
+AKS
+
+The answer is:
+
+Usually, NO. You don't deploy your own Azure Load Balancer separately.
+
+Here's why.
+
+What each component does
+1. Azure Front Door
+
+Acts as the global entry point.
+
+Responsibilities:
+
+✅ Global load balancing
+✅ WAF
+✅ SSL termination
+✅ CDN
+✅ Health probes
+✅ Route users to the nearest healthy region
+
+User
+
+↓
+
+Azure Front Door
+
+↓
+
+Region A
+or
+Region B
+2. Azure API Management (APIM)
+
+Responsibilities:
+
+Authentication
+Rate limiting
+API keys
+Request validation
+Caching
+API versioning
+Routing
+
+It is your API Gateway.
+
+3. AKS
+
+Inside AKS, your application runs in Pods.
+
+Product Pod 1
+Product Pod 2
+Product Pod 3
+
+How does APIM reach them?
+
+Through a Kubernetes Service (or an Ingress Controller if you're exposing HTTP/HTTPS).
+
+APIM
+   │
+   ▼
+Ingress / Kubernetes Service
+   │
+ ┌─┴─────────┐
+ ▼           ▼
+Pod1       Pod2
+
+The Kubernetes Service already load balances requests across the Pods.
+
+So do I need Azure Load Balancer?
+
+Usually no.
+
+Because:
+
+Front Door balances globally.
+APIM manages APIs.
+Kubernetes Service distributes traffic across Pods.
+
+Adding another manual Azure Load Balancer is often unnecessary.
+
+Complete Flow
+               Internet
+                    │
+                    ▼
+          Azure Front Door
+                    │
+                    ▼
+       Azure API Management
+                    │
+                    ▼
+      AKS Ingress / Service
+                    │
+        ┌───────────┴───────────┐
+        ▼                       ▼
+    Product Pod 1          Product Pod 2
+
+Notice that Kubernetes Service is already acting as the internal load balancer for the Pods.
+
+Interview Point
+
+If the interviewer asks:
+
+"Where is the load balancing happening?"
+
+You can answer:
+
+Azure Front Door → Global load balancing between regions or backends.
+Kubernetes Service / Ingress → Load balancing between Pods inside the AKS cluster.
+
