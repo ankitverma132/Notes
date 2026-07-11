@@ -745,3 +745,359 @@ No need to start anything or wait for failover.
                          │
                          ▼
           Azure SQL Secondary (Another Region)
+
+
+
+# Distributed System:
+
+
+A distributed system is a collection of multiple independent services that work together and appear as a single system to the user.
+
+Centralized system is a system that uses client server architecture where clients are directly connected to a single server i.e. it has single point of failure.
+To scale is you simply add more cpu & memory to this single server basically vertial scaling.
+
+
+
+Example
+
+Suppose you open Amazon.
+
+You simply see:
+
+amazon.com
+
+But behind the scenes:
+
+                 Users
+                    │
+                    ▼
+            Load Balancer
+                    │
+      ┌─────────────┼─────────────┐
+      ▼             ▼             ▼
+ Product Service Order Service User Service
+      │             │             │
+      ▼             ▼             ▼
+  Product DB     Order DB     User DB
+
+Although there are many services and databases, it behaves like one application.
+
+This is a distributed system.
+
+Another Example
+
+WhatsApp
+
+You
+
+↓
+
+WebSocket Server 1
+
+↓
+
+Redis/Kafka
+
+↓
+
+WebSocket Server 2
+
+↓
+
+Friend
+
+You think you're chatting with one app.
+
+
+Actually:
+
+Multiple servers
+Multiple databases
+Message broker
+Cache
+Load balancers
+
+Everything works together.
+
+
+Why Distributed Systems?
+
+Imagine one server.
+
+Users
+
+↓
+
+Server
+
+↓
+
+Database
+
+If:
+
+10 million users arrive
+Server crashes
+
+Everything stops.
+
+
+Instead:
+
+Users
+
+↓
+
+Load Balancer
+
+↓
+
+Server1
+Server2
+Server3
+Server4
+
+Now:
+
+More users supported
+Better availability
+Better performance
+
+Benefits
+
+✅ Scalability
+
+Add more servers.
+
+✅ High Availability
+
+One server fails.
+
+Others continue.
+
+✅ Fault Isolation
+
+Payment crashes.
+
+Movies still work.
+
+✅ Independent Deployment
+
+Deploy only:
+
+Recommendation Service
+
+without touching others.
+
+
+Challenges
+
+❌ Network latency
+
+Services communicate over the network.
+
+❌ Data consistency
+
+Keeping multiple databases synchronized can be difficult.
+
+❌ Debugging
+
+A single user request may pass through many services.
+
+❌ Monitoring
+
+Need centralized logging and tracing.
+
+
+Example Using AKS
+                 Users
+                    │
+            Azure Front Door
+                    │
+                    ▼
+         Azure API Management
+                    │
+                    ▼
+                 AKS
+    ┌──────────┬──────────┬──────────┐
+    ▼          ▼          ▼
+ Product    Order      User Pods
+ Service    Service    Service
+    │          │          │
+    ▼          ▼          ▼
+ Redis      SQL DB    SQL DB
+
+This entire architecture is a distributed system because it consists of multiple independently running components working together.
+
+
+Interview Definition ⭐
+
+If asked:
+
+"What is a distributed system?"
+
+A concise answer is:
+
+"A distributed system is a collection of independent computers or services that communicate over a network and work together to provide a single application to users. It improves scalability, availability, and fault tolerance by distributing work across multiple machines."
+
+
+Easy way to remember
+Monolith
+One Application
+
+↓
+
+One Server
+Distributed System
+One Application
+
+↓
+
+Many Servers
+
+↓
+
+Many Services
+
+↓
+
+Many Databases
+
+
+Monolith
+
+Suppose your application has:
+
+Application
+
+├── Product
+├── Orders
+├── Users
+├── Payments
+
+All modules run together.
+
+Now imagine:
+
+Product page gets 100,000 requests/minute
+Orders get 5,000 requests/minute
+Users get 2,000 requests/minute
+
+If Product is under heavy load:
+
+You must scale the entire application.
+
+Before
+
+1 Monolith Server
+
+↓
+
+Traffic ↑
+
+↓
+
+Need 5 Servers
+
+Each server has:
+
+Product
+Order
+User
+Payment
+
+Even though only Product needed more capacity.
+
+Microservices (Distributed System)
+
+Now split the application:
+
+Product Service
+
+Order Service
+
+User Service
+
+Payment Service
+
+Each service runs independently.
+
+Traffic:
+
+Product Service
+
+100k req/min
+
+----------------
+
+Order Service
+
+5k req/min
+
+----------------
+
+User Service
+
+2k req/min
+
+Only Product Service is busy.
+
+Scale only Product Service
+Product Service
+
+Pod1
+Pod2
+Pod3
+Pod4
+Pod5
+Pod6
+
+--------------
+
+Order Service
+
+Pod1
+
+--------------
+
+User Service
+
+Pod1
+
+--------------
+
+Payment Service
+
+Pod1
+
+Only Product Service gets more replicas.
+
+This is independent scaling.
+
+
+In AKS
+
+Suppose Product Deployment has:
+
+replicas: 2
+
+Traffic increases.
+
+HPA changes it to:
+
+replicas: 10
+
+Only Product Pods increase.
+
+Order Pods remain:
+
+Order
+
+2 Pods
+
+No unnecessary scaling.
+
+
+Monolith → scale the whole application.
+Distributed system (microservices) → scale only the services that need it. This is one of the biggest reasons large-scale systems adopt a distributed architecture.
+
