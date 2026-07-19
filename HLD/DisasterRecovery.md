@@ -674,11 +674,11 @@ RTO ≈ 0
 RPO ≈ 0 (if data replication is designed appropriately)
 
 Comparison
-Strategy	                    Cost	    Recovery Time (RTO)	    Data Loss (RPO)
-Backup & Restore	            ⭐ Lowest	Hours	                Hours
-Pilot Light         	        ⭐⭐	        Minutes to Hours	    Low
-Active-Passive (Warm Standby)	⭐⭐⭐	        Minutes	Near Zero
-Active-Active	                ⭐⭐⭐⭐        Highest	Near Zero	Near Zero
+Strategy	                    Cost	      Recovery Time (RTO)	    Data Loss (RPO)
+Backup & Restore	            ⭐          Lowest	Hours	                Hours
+Pilot Light         	         ⭐⭐	        Minutes to Hours	         Low
+Active-Passive (Warm Standby)	⭐⭐⭐	    Minutes	Near Zero
+Active-Active	               ⭐⭐⭐⭐      Highest	Near Zero	      Near Zero
 
 
 ### Azure Example
